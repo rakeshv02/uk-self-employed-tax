@@ -1,42 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UK Self-Employed Tax Calculator 2025/26 – Sole Trader Income Tax & NI | Tabutility</title>
+  <meta name="description" content="Free UK self-employed tax calculator for 2025/26. Calculate income tax and Class 4 NI for sole traders. Class 2 NI abolished from April 2024. Includes payment on account estimates." />
+  <meta name="keywords" content="self employed tax calculator UK, sole trader tax 2025, class 4 NI calculator, self assessment tax, freelancer tax UK" />
+  <link rel="canonical" href="https://uk-self-employed-tax.tabutility.com/" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-78VZWJ5B1W"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-78VZWJ5B1W');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039091592734005" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#faf5ff;}.site-nav{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}.site-nav a{color:#a5b4fc;text-decoration:none;font-size:14px;font-family:'Segoe UI',Arial,sans-serif;}.nav-brand{color:#fff;font-weight:700;font-size:16px;font-family:'Segoe UI',Arial,sans-serif;}#ad-top,#ad-bottom{text-align:center;padding:10px;background:#fff;}</style>
+</head>
+<body>
+  <nav class="site-nav"><span class="nav-brand">⚡ Tabutility</span><a href="https://tabutility.com">← All Tools</a></nav>
+  <div id="ad-top"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7039091592734005" data-ad-slot="auto" data-ad-format="horizontal" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
+  <div id="root"></div>
+  <div id="ad-bottom"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7039091592734005" data-ad-slot="auto" data-ad-format="rectangle" data-full-width-responsive="true"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></div>
+  <script type="text/babel">
+    //<![CDATA[
+    const { useState } = React;
 
-    <!-- ✏️ UPDATE THESE FOR EVERY NEW TOOL -->
-    <title>TOOL NAME — TOOL TAGLINE | Tabutility</title>
-    <meta name="description" content="TOOL DESCRIPTION. No sign-up, runs in your browser." />
-    <meta name="keywords" content="KEYWORD 1, KEYWORD 2, KEYWORD 3, free TOOL NAME" />
-    <link rel="canonical" href="https://SUBDOMAIN.tabutility.com/" />
-    <meta property="og:url" content="https://SUBDOMAIN.tabutility.com/" />
-    <meta property="og:title" content="TOOL NAME — TOOL TAGLINE" />
-    <meta property="og:description" content="TOOL DESCRIPTION. Free, no sign-up." />
-    <meta name="twitter:title" content="TOOL NAME — TOOL TAGLINE" />
-    <meta name="twitter:description" content="TOOL DESCRIPTION. Free, no sign-up." />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>EMOJI</text></svg>" />
-    <!-- ✏️ END OF SECTION TO UPDATE -->
+    const PA = 12570, BASIC_LIMIT = 50270, HIGHER_LIMIT = 125140;
+    const LPL = 12570, UPL = 50270;
+    const fmt = n => "£" + Math.round(n).toLocaleString();
+    const pct = n => n.toFixed(2) + "%";
 
-    <!-- DO NOT CHANGE ANYTHING BELOW THIS LINE -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Tabutility" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="robots" content="index, follow" />
+    function UKSelfEmployedTax() {
+      const [profit, setProfit] = useState("40000");
+      const [otherIncome, setOtherIncome] = useState("0");
+      const [result, setResult] = useState(null);
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7039091592734005" crossorigin="anonymous"></script>
+      const calculate = () => {
+        const p = parseFloat(profit)||0;
+        const other = parseFloat(otherIncome)||0;
+        const totalIncome = p + other;
+        let effectivePA = PA;
+        if (totalIncome > 100000) effectivePA = Math.max(0, PA - (totalIncome - 100000) / 2);
+        let incomeTax = 0;
+        const taxableAfterPA = Math.max(0, totalIncome - effectivePA);
+        if (taxableAfterPA > 0) incomeTax += Math.min(taxableAfterPA, BASIC_LIMIT - effectivePA) * 0.20;
+        if (totalIncome > BASIC_LIMIT) incomeTax += Math.min(totalIncome - BASIC_LIMIT, HIGHER_LIMIT - BASIC_LIMIT) * 0.40;
+        if (totalIncome > HIGHER_LIMIT) incomeTax += (totalIncome - HIGHER_LIMIT) * 0.45;
+        incomeTax = Math.max(0, incomeTax);
+        let class4NI = 0;
+        if (p > LPL) class4NI += Math.min(p - LPL, UPL - LPL) * 0.06;
+        if (p > UPL) class4NI += (p - UPL) * 0.02;
+        const totalTax = incomeTax + class4NI;
+        const netProfit = p - totalTax;
+        setResult({ p, other, totalIncome, incomeTax, class4NI, totalTax, netProfit, effectiveRate: p > 0 ? totalTax/p*100 : 0, paymentOnAccount: totalTax / 2, effectivePA });
+      };
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-78VZWJ5B1W"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-78VZWJ5B1W');
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+      const inputStyle = { width:"100%",padding:"12px",border:"2px solid #e9d5ff",borderRadius:10,fontSize:16,boxSizing:"border-box",outline:"none" };
+      const labelStyle = { display:"block",fontWeight:600,marginBottom:6,color:"#333" };
+
+      return (
+        <div style={{ fontFamily:"'Segoe UI',Arial,sans-serif",background:"#faf5ff",minHeight:"100vh",padding:"20px" }}>
+          <div style={{ maxWidth:820,margin:"0 auto" }}>
+            <div style={{ textAlign:"center",marginBottom:32 }}>
+              <div style={{ fontSize:48,marginBottom:8 }}>🧾</div>
+              <h1 style={{ margin:0,fontSize:32,fontWeight:800,color:"#1a1a2e" }}>UK Self-Employed Tax Calculator</h1>
+              <p style={{ margin:"8px 0 0",color:"#555",fontSize:16 }}>Income tax + Class 4 NI for sole traders — 2025/26 self-assessment</p>
+            </div>
+            <div style={{ background:"#f0fdf4",border:"1px solid #86efac",borderRadius:12,padding:14,marginBottom:20,fontSize:13,color:"#166534" }}>
+              <strong>🆕 Class 2 NI abolished from April 2024.</strong> Self-employed people no longer pay the flat-rate Class 2 NI. Class 4 NI still applies on profits above £12,570.
+            </div>
+            <div style={{ background:"#fff",borderRadius:16,padding:28,boxShadow:"0 4px 24px rgba(0,0,0,0.08)",marginBottom:24 }}>
+              <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(200px,1fr))",gap:20 }}>
+                <div>
+                  <label style={labelStyle}>Self-Employed Profit (£)</label>
+                  <div style={{ position:"relative" }}><span style={{ position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:"#666",fontWeight:600 }}>£</span><input type="number" value={profit} onChange={e=>setProfit(e.target.value)} style={{...inputStyle,paddingLeft:28}} /></div>
+                  <div style={{ fontSize:12,color:"#888",marginTop:4 }}>Revenue minus allowable business expenses</div>
+                </div>
+                <div>
+                  <label style={labelStyle}>Other Taxable Income (£)</label>
+                  <div style={{ position:"relative" }}><span style={{ position:"absolute",left:12,top:"50%",transform:"translateY(-50%)",color:"#666",fontWeight:600 }}>£</span><input type="number" value={otherIncome} onChange={e=>setOtherIncome(e.target.value)} style={{...inputStyle,paddingLeft:28}} /></div>
+                  <div style={{ fontSize:12,color:"#888",marginTop:4 }}>Employment income, rental income, etc.</div>
+                </div>
+              </div>
+              <button onClick={calculate} style={{ width:"100%",marginTop:24,padding:"16px",background:"linear-gradient(135deg, #7c3aed, #6d28d9)",color:"#fff",border:"none",borderRadius:12,fontSize:18,fontWeight:700,cursor:"pointer" }}>Calculate My Tax Bill</button>
+            </div>
+            {result && <>
+              <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(160px,1fr))",gap:16,marginBottom:24 }}>
+                {[
+                  { label:"Net Profit", value:fmt(result.netProfit), color:"#2f9e44", bg:"#ebfbee" },
+                  { label:"Income Tax", value:fmt(result.incomeTax), color:"#e03131", bg:"#fff5f5" },
+                  { label:"Class 4 NI", value:fmt(result.class4NI), color:"#7c3aed", bg:"#faf5ff" },
+                  { label:"Total Tax Bill", value:fmt(result.totalTax), color:"#e03131", bg:"#fff5f5" },
+                  { label:"Effective Rate", value:pct(result.effectiveRate), color:"#e67700", bg:"#fff9db" },
+                ].map((item,i) => (
+                  <div key={i} style={{ background:item.bg,borderRadius:14,padding:18,textAlign:"center",border:`2px solid ${item.color}22` }}>
+                    <div style={{ fontSize:22,fontWeight:800,color:item.color }}>{item.value}</div>
+                    <div style={{ fontSize:12,color:"#555",marginTop:4,fontWeight:500 }}>{item.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:24 }}>
+                <div style={{ background:"#fff",borderRadius:16,padding:24,boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+                  <h3 style={{ margin:"0 0 14px",fontSize:15,fontWeight:700 }}>Tax Breakdown</h3>
+                  {[
+                    { label:"Self-Employed Profit", value:fmt(result.p) },
+                    { label:"Personal Allowance", value:`−${fmt(result.effectivePA)}` },
+                    { label:"Income Tax", value:`−${fmt(result.incomeTax)}`, color:"#e03131" },
+                    { label:"Class 4 NI", value:`−${fmt(result.class4NI)}`, color:"#7c3aed" },
+                    { label:"Net Profit After Tax", value:fmt(result.netProfit), bold:true, color:"#2f9e44", border:true },
+                  ].map((row,i) => (
+                    <div key={i} style={{ display:"flex",justifyContent:"space-between",padding:"8px 0",borderTop:row.border?"2px solid #e9ecef":"1px solid #f1f3f5" }}>
+                      <span style={{ fontSize:13,color:"#555",fontWeight:row.bold?700:400 }}>{row.label}</span>
+                      <span style={{ fontSize:13,fontWeight:row.bold?700:600,color:row.color||"#222" }}>{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background:"#fff",borderRadius:16,padding:24,boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+                  <h3 style={{ margin:"0 0 14px",fontSize:15,fontWeight:700 }}>Payments on Account</h3>
+                  {[
+                    { label:"31 Jan (1st payment on account)", value:fmt(result.paymentOnAccount) },
+                    { label:"31 Jul (2nd payment on account)", value:fmt(result.paymentOnAccount) },
+                    { label:"Balancing payment (31 Jan)", value:"Varies" },
+                  ].map((row,i) => (
+                    <div key={i} style={{ padding:"10px 0",borderTop:"1px solid #f1f3f5" }}>
+                      <div style={{ fontSize:12,color:"#888" }}>{row.label}</div>
+                      <div style={{ fontSize:15,fontWeight:700,color:"#7c3aed" }}>{row.value}</div>
+                    </div>
+                  ))}
+                  <div style={{ marginTop:12,fontSize:12,color:"#888" }}>Each payment on account = 50% of prior year's tax bill.</div>
+                </div>
+              </div>
+              <div style={{ background:"#fff",borderRadius:16,padding:24,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",marginBottom:24 }}>
+                <h3 style={{ margin:"0 0 14px",fontSize:16,fontWeight:700 }}>📊 2025/26 Class 4 NI Rates</h3>
+                <table style={{ width:"100%",borderCollapse:"collapse",fontSize:13 }}>
+                  <thead><tr style={{ background:"#faf5ff" }}>{["Profit Range","Rate"].map(h=><th key={h} style={{ padding:"9px 12px",textAlign:"left",fontWeight:700 }}>{h}</th>)}</tr></thead>
+                  <tbody>{[["Below £12,570","Nil (Class 2 abolished)"],["£12,571 – £50,270","6%"],["Above £50,270","2%"]].map((row,i)=>(
+                    <tr key={i} style={{ borderBottom:"1px solid #f1f3f5",background:i%2===0?"#fff":"#fafafa" }}>
+                      <td style={{ padding:"9px 12px" }}>{row[0]}</td>
+                      <td style={{ padding:"9px 12px",color:i===0?"#9ca3af":"#7c3aed",fontWeight:600 }}>{row[1]}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
+                <p style={{ margin:"10px 0 0",fontSize:12,color:"#888" }}>Source: gov.uk</p>
+              </div>
+              <div style={{ background:"#fff3cd",border:"1px solid #ffc107",borderRadius:12,padding:16,fontSize:13,color:"#664d03" }}>
+                <strong>Estimate only.</strong> Does not include VAT, pension contributions, trading allowance, or capital allowances. File your Self Assessment return at gov.uk by 31 January each year.
+              </div>
+            </>}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<UKSelfEmployedTax />);
+    //]]>
+  </script>
+</body>
 </html>
