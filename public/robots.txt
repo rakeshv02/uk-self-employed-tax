@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://uk-self-employed-tax.tabutility.com/sitemap.xml
