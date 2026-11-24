@@ -7,8 +7,8 @@
   <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UK Self-Employed Tax Calculator 2025/26 – Sole Trader Income Tax & NI | Tabutility</title>
-  <meta name="description" content="Free UK self-employed tax calculator for 2025/26. Calculate income tax and Class 4 NI for sole traders. Class 2 NI abolished from April 2024. Includes." />
+  <title>UK Self-Employed Tax Calculator 2026/27 – Sole Trader Income Tax & NI | Tabutility</title>
+  <meta name="description" content="Estimate 2026/27 sole-trader Income Tax and Class 4 NI using England, Wales and Northern Ireland rates. Includes illustrative payments on account." />
   <meta name="keywords" content="self employed tax calculator UK, sole trader tax 2025, class 4 NI calculator, self assessment tax, freelancer tax UK" />
   <link rel="canonical" href="https://uk-self-employed-tax.tabutility.com/" />
   
@@ -18,8 +18,8 @@
   <script defer src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script defer src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#faf5ff;}.site-nav{background:#1a1a2e;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}.site-nav a{color:#a5b4fc;text-decoration:none;font-size:14px;font-family:'Segoe UI',Arial,sans-serif;}.nav-brand{color:#fff;font-weight:700;font-size:16px;font-family:'Segoe UI',Arial,sans-serif;}#ad-top,#ad-bottom{text-align:center;padding:4px;background:#fff;}</style>
-  <meta property="og:title" content="UK Self-Employed Tax Calculator 2025/26 – Sole Trader Income Tax & NI | Tabutility"/>
-  <meta property="og:description" content="Free UK self-employed tax calculator for 2025/26. Calculate income tax and Class 4 NI for sole traders. Class 2 NI abolished from April 2024. Includes payment on account estimates."/>
+  <meta property="og:title" content="UK Self-Employed Tax Calculator 2026/27 – Sole Trader Income Tax & NI | Tabutility"/>
+  <meta property="og:description" content="Estimate 2026/27 sole-trader Income Tax and Class 4 NI using England, Wales and Northern Ireland rates. Includes illustrative payments on account."/>
   <meta property="og:url" content="https://uk-self-employed-tax.tabutility.com/"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Tabutility"/>
@@ -28,9 +28,9 @@
 <meta property="og:image:height" content="630"/>
 <meta name="twitter:image" content="https://uk-self-employed-tax.tabutility.com/og-image.png"/>
   <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="UK Self-Employed Tax Calculator 2025/26 – Sole Trader Income Tax & NI | Tabutility"/>
-  <meta name="twitter:description" content="Free UK self-employed tax calculator for 2025/26. Calculate income tax and Class 4 NI for sole traders. Class 2 NI abolished from April 2024. Includes payment on account estimates."/>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"UK Self-Employed Tax Calculator","description":"Income tax, Class 2 and Class 4 NI for sole traders — 2025/26 self-assessment.","url":"https://uk-self-employed-tax.tabutility.com/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Tabutility","url":"https://tabutility.com"}}</script>
+  <meta name="twitter:title" content="UK Self-Employed Tax Calculator 2026/27 – Sole Trader Income Tax & NI | Tabutility"/>
+  <meta name="twitter:description" content="Estimate 2026/27 sole-trader Income Tax and Class 4 NI using England, Wales and Northern Ireland rates. Includes illustrative payments on account."/>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"UK Self-Employed Tax Calculator","description":"Income tax and Class 4 NI for sole traders — 2026/27 estimate, excluding Scottish Income Tax.","url":"https://uk-self-employed-tax.tabutility.com/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"provider":{"@type":"Organization","name":"Tabutility","url":"https://tabutility.com"}}</script>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
   <link rel="alternate" hreflang="en-GB" href="https://uk-self-employed-tax.tabutility.com/" />
   <link rel="alternate" hreflang="x-default" href="https://uk-self-employed-tax.tabutility.com/" />
@@ -43,6 +43,7 @@
 nav .brand{color:#fff}
 nav a:hover{color:#818cf8}
 input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
+input[type="number"],select,button{min-height:44px;box-sizing:border-box}
 </style>
 <link rel="dns-prefetch" href="//unpkg.com">
 
@@ -59,6 +60,15 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
     const LPL = 12570, UPL = 50270;
     const fmt = n => "£" + Math.round(n).toLocaleString();
     const pct = n => n.toFixed(2) + "%";
+    // England, Wales and Northern Ireland, non-savings income; GOV.UK 2026/27.
+    function incomeTaxFor(income) {
+      const allowance = Math.max(0, PA - Math.max(0, income - 100000) / 2);
+      const taxable = Math.max(0, income - allowance);
+      const basicWidth = BASIC_LIMIT - PA;
+      return Math.min(taxable, basicWidth) * 0.20
+        + Math.min(Math.max(0, taxable - basicWidth), HIGHER_LIMIT - allowance - basicWidth) * 0.40
+        + Math.max(0, income - HIGHER_LIMIT) * 0.45;
+    }
 
     function UKSelfEmployedTax() {
       const [profit, setProfit] = useState("40000");
@@ -68,15 +78,15 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
       const calculate = () => {
         const p = parseFloat(profit)||0;
         const other = parseFloat(otherIncome)||0;
+        if (![p, other].every(Number.isFinite) || p < 0 || other < 0) {
+          alert('Enter non-negative profit and other income.');
+          return;
+        }
         const totalIncome = p + other;
         let effectivePA = PA;
         if (totalIncome > 100000) effectivePA = Math.max(0, PA - (totalIncome - 100000) / 2);
-        let incomeTax = 0;
-        const taxableAfterPA = Math.max(0, totalIncome - effectivePA);
-        if (taxableAfterPA > 0) incomeTax += Math.min(taxableAfterPA, BASIC_LIMIT - effectivePA) * 0.20;
-        if (totalIncome > BASIC_LIMIT) incomeTax += Math.min(totalIncome - BASIC_LIMIT, HIGHER_LIMIT - BASIC_LIMIT) * 0.40;
-        if (totalIncome > HIGHER_LIMIT) incomeTax += (totalIncome - HIGHER_LIMIT) * 0.45;
-        incomeTax = Math.max(0, incomeTax);
+        // Attribute only the additional Income Tax to business profit.
+        const incomeTax = Math.max(0, incomeTaxFor(totalIncome) - incomeTaxFor(other));
         let class4NI = 0;
         if (p > LPL) class4NI += Math.min(p - LPL, UPL - LPL) * 0.06;
         if (p > UPL) class4NI += (p - UPL) * 0.02;
@@ -94,10 +104,10 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
             <div style={{ textAlign:"center",marginBottom:32 }}>
               <div style={{ fontSize:48,marginBottom:8 }}>🧾</div>
               <h1 style={{ margin:0,fontSize:32,fontWeight:800,color:"#1a1a2e" }}>UK Self-Employed Tax Calculator</h1>
-              <p style={{ margin:"8px 0 0",color:"#555",fontSize:16 }}>Income tax + Class 4 NI for sole traders — 2025/26 self-assessment</p>
+              <p style={{ margin:"8px 0 0",color:"#555",fontSize:16 }}>Income tax + Class 4 NI for sole traders — 2026/27 estimate</p>
             </div>
             <div style={{ background:"#f0fdf4",border:"1px solid #86efac",borderRadius:12,padding:14,marginBottom:20,fontSize:13,color:"#166534" }}>
-              <strong>🆕 Class 2 NI abolished from April 2024.</strong> Self-employed people no longer pay the flat-rate Class 2 NI. Class 4 NI still applies on profits above £12,570.
+              <strong>No compulsory Class 2 charge is included.</strong> Voluntary contributions may still be relevant for low profits. Uses England, Wales and Northern Ireland non-savings income-tax bands, not Scottish rates. Other income is treated as non-savings income; only additional Income Tax attributable to profit is deducted from business profit.
             </div>
             <div style={{ background:"#fff",borderRadius:16,padding:28,boxShadow:"0 4px 24px rgba(0,0,0,0.08)",marginBottom:24 }}>
               <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(200px,1fr))",gap:20 }}>
@@ -129,13 +139,13 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
                   </div>
                 ))}
               </div>
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:24 }}>
+              <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,240px),1fr))",gap:20,marginBottom:24 }}>
                 <div style={{ background:"#fff",borderRadius:16,padding:24,boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
                   <h3 style={{ margin:"0 0 14px",fontSize:15,fontWeight:700 }}>Tax Breakdown</h3>
                   {[
                     { label:"Self-Employed Profit", value:fmt(result.p) },
                     { label:"Personal Allowance", value:`−${fmt(result.effectivePA)}` },
-                    { label:"Income Tax", value:`−${fmt(result.incomeTax)}`, color:"#e03131" },
+                    { label:"Additional Income Tax on profit", value:`−${fmt(result.incomeTax)}`, color:"#e03131" },
                     { label:"Class 4 NI", value:`−${fmt(result.class4NI)}`, color:"#7c3aed" },
                     { label:"Net Profit After Tax", value:fmt(result.netProfit), bold:true, color:"#2f9e44", border:true },
                   ].map((row,i) => (
@@ -157,11 +167,11 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
                       <div style={{ fontSize:15,fontWeight:700,color:"#7c3aed" }}>{row.value}</div>
                     </div>
                   ))}
-                  <div style={{ marginTop:12,fontSize:12,color:"#888" }}>Each payment on account = 50% of prior year's tax bill.</div>
+                  <div style={{ marginTop:12,fontSize:12,color:"#888" }}>Illustration only, before tax already withheld. Payments on account normally apply when the prior Self Assessment bill is at least £1,000 and less than 80% was collected outside Self Assessment. Each instalment is normally 50% of the relevant prior-year bill.</div>
                 </div>
               </div>
               <div style={{ background:"#fff",borderRadius:16,padding:24,boxShadow:"0 2px 12px rgba(0,0,0,0.06)",marginBottom:24 }}>
-                <h3 style={{ margin:"0 0 14px",fontSize:16,fontWeight:700 }}>📊 2025/26 Class 4 NI Rates</h3>
+                <h3 style={{ margin:"0 0 14px",fontSize:16,fontWeight:700 }}>📊 2026/27 Class 4 NI Rates</h3>
                 <table style={{ width:"100%",borderCollapse:"collapse",fontSize:13 }}>
                   <thead><tr style={{ background:"#faf5ff" }}>{["Profit Range","Rate"].map(h=><th key={h} style={{ padding:"9px 12px",textAlign:"left",fontWeight:700 }}>{h}</th>)}</tr></thead>
                   <tbody>{[["Below £12,570","Nil (Class 2 abolished)"],["£12,571 – £50,270","6%"],["Above £50,270","2%"]].map((row,i)=>(
@@ -267,26 +277,26 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
 </script>
 <footer style="background:#1a1a2e;margin-top:48px;padding:28px 24px;text-align:center;font-family:'Segoe UI',system-ui,Arial,sans-serif;font-size:13px;color:#94a3b8;line-height:1.8">
 <div style="font-weight:700;color:#fff;font-size:15px">⚡ Tabutility</div>
-<div>Free, private, browser-based tools. No sign-up, no tracking.</div>
+<div>Free, browser-based tools. No sign-up. Advertising and analytics are explained in our privacy policy.</div>
 <div style="margin-top:6px"><a href="https://tabutility.com" style="color:#818cf8;font-weight:600;text-decoration:none">All Tools</a> · <a href="https://tabutility.com/blog/" style="color:#94a3b8;text-decoration:none">Blog</a> · <a href="https://tabutility.com/about/" style="color:#94a3b8;text-decoration:none">About</a> · <a href="https://tabutility.com/privacy-policy/" style="color:#94a3b8;text-decoration:none">Privacy</a> · <a href="https://tabutility.com/contact/" style="color:#94a3b8;text-decoration:none">Contact</a></div>
 <div style="margin-top:6px;color:#64748b">© 2026 Tabutility</div>
 
   <section id="seo-content" style="background:#1a1a2e;color:#e2e8f0;padding:60px 20px;margin-top:40px;border-top:1px solid #2d3748;">
     <div style="max-width:860px;margin:0 auto;font-family:system-ui,-apple-system,sans-serif;line-height:1.7;">
       <h2 style="font-size:2rem;font-weight:700;color:#f1f5f9;margin-bottom:24px;">How to Use the UK Self-Employed Tax Calculator</h2>
-      <p style="margin-bottom:16px;color:#cbd5e1;">The UK Self-Employed Tax Calculator computes income tax, Class 2 NI, and Class 4 NI for sole traders and partners for 2025/26. Enter your self-employment profits to see your total tax liability, payment on account schedule, and effective tax rate — essential for setting aside the right amount from each invoice.</p>
+      <p style="margin-bottom:16px;color:#cbd5e1;">Estimate Income Tax attributable to self-employment profit and Class 4 NI for 2026/27. This is a planning estimate for England, Wales and Northern Ireland, not Scottish Income Tax. Other income is treated as non-savings income. Voluntary Class 2 contributions and tax already withheld are not modeled.</p>
       <p style="margin-bottom:16px;color:#cbd5e1;">Unlike employed workers who have tax deducted at source, self-employed individuals pay tax through self-assessment, with payments on account due on 31 January and 31 July each year. The calculator shows your first-year tax bill and ongoing payment schedule.</p>
       <p style="margin-bottom:16px;color:#cbd5e1;">A key nuance: allowable business expenses reduce your taxable profit — not just your net income. Costs like office rent, travel, software subscriptions, professional development, and equipment (via Annual Investment Allowance) are fully deductible against profits before tax is calculated. Keeping good expense records is essential.</p>
 
       <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:28px;margin:32px 0;">
         <h3 style="font-size:1.2rem;font-weight:600;color:#f1f5f9;margin-bottom:16px;">📊 Worked Example</h3>
-        <p style="color:#94a3b8;margin:0 0 12px;">Self-employment profits £45,000, 2025/26:</p>
+        <p style="color:#94a3b8;margin:0 0 12px;">Self-employment profits £45,000, no other income, 2026/27:</p>
         <ul style="list-style:none;padding:0;margin:0;color:#cbd5e1;">
           <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Income tax: <strong style="color:#f87171;">£6,486</strong> (20% on £32,430)</li>
-          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Class 4 NI: <strong style="color:#f87171;">£2,951</strong> (6% on £32,430 + 2% on zero)</li>
-          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Class 2 NI: <strong style="color:#34d399;">£179/year</strong> (voluntary from 2024/25)</li>
-          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Total tax + NI: <strong style="color:#f87171;">£9,616</strong></li>
-          <li style="padding:6px 0;">Take-home: <strong style="color:#34d399;">£35,384 (78.6%)</strong></li>
+          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Class 4 NI: <strong style="color:#f87171;">£1,945.80</strong> (6% on £32,430)</li>
+          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Compulsory Class 2 charge: <strong style="color:#34d399;">£0</strong>; voluntary contributions are not modeled</li>
+          <li style="padding:6px 0;border-bottom:1px solid #1e293b;">Total tax + NI: <strong style="color:#f87171;">£8,431.80</strong></li>
+          <li style="padding:6px 0;">Take-home: <strong style="color:#34d399;">£36,568.20 (81.3%)</strong></li>
         </ul>
       </div>
 
@@ -303,7 +313,7 @@ input:focus,select:focus,textarea:focus{border-color:#818cf8!important}
       <h3 style="font-size:1.4rem;font-weight:600;color:#f1f5f9;margin:32px 0 24px;">Frequently Asked Questions</h3>
       <div style="margin-bottom:24px;">
         <h4 style="font-size:1rem;font-weight:600;color:#f1f5f9;margin-bottom:8px;">What taxes does a self-employed person pay?</h4>
-        <p style="color:#cbd5e1;margin:0;">Self-employed individuals pay: Income Tax on profits above the personal allowance (20% basic rate, 40% higher rate, 45% additional rate), Class 4 National Insurance (6% on profits £12,570–£50,270, 2% above), and Class 2 NI (voluntary from 2024/25 but protects State Pension entitlement at £3.45/week if profits exceed £6,845).</p>
+        <p style="color:#cbd5e1;margin:0;">The estimate includes Income Tax at the applicable marginal bands and Class 4 NI at 6% between £12,570 and £50,270 and 2% above. No compulsory Class 2 charge is included. Voluntary Class 2 may help some low-profit contributors protect their National Insurance record; check GOV.UK for eligibility and current rates.</p>
       </div>
       <div style="margin-bottom:24px;">
         <h4 style="font-size:1rem;font-weight:600;color:#f1f5f9;margin-bottom:8px;">What is a payment on account?</h4>
